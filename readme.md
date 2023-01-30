@@ -19,3 +19,41 @@ To use the loops from 'scootloops', you can import the library in your code like
 ```
 import { forLoopUp } from 'scootloops';
 ```
+
+## forLoopUp(start, end, callback)
+
+A simple incrementing for loop that starts from start and goes up to end. The loop runs the callback function for each iteration, passing in the current loop index as an argument.
+
+```
+forLoopUp(0, 10, i => {
+  console.log(i);
+});
+```
+
+## forLoopDown(start, end, callback)
+
+A simple decrementing for loop that starts from start and goes down to end. The loop runs the callback function for each iteration, passing in the current loop index as an argument.
+
+```
+forLoopDown(10, 0, i => {
+  console.log(i);
+});
+```
+
+## forEach(array, callback)
+
+A for-each loop that iterates over the items in an array. The loop runs the callback function for each iteration, passing in the current item as an argument.
+
+```
+forEach([1, 2, 3], item => {
+  console.log(item);
+});
+```
+
+## Contributing
+
+If you would like to contribute to the development of `scootloops`, feel free to open a pull request on the repository.
+
+## License
+
+`scootloops` is licensed under the MIT License
