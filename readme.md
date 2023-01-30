@@ -1,6 +1,8 @@
 # scootloops
 
-[![Build Status](https://img.shields.io/npm/v/scootloops.svg)](https://www.npmjs.com/package/scootloops)
+<!-- [![Build Status](https://img.shields.io/npm/v/scootloops.svg)](https://www.npmjs.com/package/scootloops) -->
+
+[![Build Status](https://img.shields.io/travis/user/repo/master.svg?style=flat-square)](https://travis-ci.org/PxPerfectMike/scootloops)
 
 A JavaScript library for simple and easy-to-use loops.
 
