@@ -35,5 +35,8 @@
 		"@babel/preset-env": "^7.20.2",
 		"babel-cli": "^6.26.0",
 		"babel-preset-env": "^1.7.0"
+	},
+	"dependencies": {
+		"jest": "^29.4.1"
 	}
 }
