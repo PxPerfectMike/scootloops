@@ -10,7 +10,7 @@ A JavaScript library for simple and easy-to-use loops.
 
 To install 'scootloops' as a dependency in your project, run the following command:
 
-```
+```bash
 npm install scootloops
 ```
 
@@ -18,7 +18,7 @@ npm install scootloops
 
 To use the loops from 'scootloops', you can import the library in your code like this:
 
-```
+```javascript
 import { forLoopUp } from 'scootloops';
 ```
 
@@ -26,9 +26,9 @@ import { forLoopUp } from 'scootloops';
 
 A simple incrementing for loop that starts from start and goes up to end. The loop runs the callback function for each iteration, passing in the current loop index as an argument.
 
-```
-forLoopUp(0, 10, i => {
-  console.log(i);
+```javascript
+forLoopUp(0, 10, (i) => {
+	console.log(i);
 });
 ```
 
@@ -36,9 +36,9 @@ forLoopUp(0, 10, i => {
 
 A simple decrementing for loop that starts from start and goes down to end. The loop runs the callback function for each iteration, passing in the current loop index as an argument.
 
-```
-forLoopDown(10, 0, i => {
-  console.log(i);
+```javascript
+forLoopDown(10, 0, (i) => {
+	console.log(i);
 });
 ```
 
@@ -46,9 +46,9 @@ forLoopDown(10, 0, i => {
 
 A for-each loop that iterates over the items in an array. The loop runs the callback function for each iteration, passing in the current item as an argument.
 
-```
-forEach([1, 2, 3], item => {
-  console.log(item);
+```javascript
+forEach([1, 2, 3], (item) => {
+	console.log(item);
 });
 ```
 
