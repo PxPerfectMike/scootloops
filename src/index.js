@@ -23,50 +23,71 @@ export function mapIt(array, callback) {
 }
 
 // invoking reduceIt without initialValue will default to 0
-function reduceIt(array, initialValue = 0) {
+export function reduceIt(array, initialValue = 0) {
 	return array.reduce(
 		(accumulator, currentValue) => accumulator + currentValue,
 		initialValue
 	);
 }
 
-function filterIt(array, condition) {
-	let callback;
-	if (typeof condition === 'string') {
-		switch (condition) {
-			case 'even':
-				callback = (num) => num % 2 === 0;
-				break;
-			case 'odd':
-				callback = (num) => num % 2 !== 0;
-				break;
-			case 'greaterThan':
-				callback = (num) => num > condition.split('(')[1].split(')')[0];
-				break;
-			case 'lessThan':
-				callback = (num) => num > condition.split('(')[1].split(')')[0];
-				break;
-			case 'startsWith':
-				callback = (str) =>
-					str.startsWith(condition.split('(')[1].split(')')[0]);
-				break;
-			case 'length':
-				callback = (str) =>
-					str.length === condition.split('(')[1].split(')')[0];
-				break;
-			case 'contains':
-				callback = (str) => str.includes(condition.split('(')[1].split(')')[0]);
-				break;
-			case 'endsWith':
-				callback = (str) => str.endsWith(condition.split('(')[1].split(')')[0]);
-				break;
-			default:
-				throw new Error(`Invalid filter condition: ${condition}`);
-		}
-	} else {
-		callback = condition;
+export function filterIt(array, condition) {
+	if (!array) {
+		throw new Error('Invalid argument: The first argument must be an array.');
 	}
-	return array.filter(callback);
-}
 
-filterIt([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 'even'); // [2, 4, 6, 8, 10]
+	let filteredArray = [];
+
+	const conditionParts = condition.split('.');
+	const propName = conditionParts[0];
+	let operator;
+	let value;
+	if (conditionParts[1].includes('(')) {
+		operator = conditionParts[1].split('(')[0];
+		value = parseInt(conditionParts[1].split('(')[1].replace(')', ''));
+	} else {
+		operator = conditionParts[1];
+		value = conditionParts[2];
+	}
+
+	filteredArray = array.filter((item) => {
+		if (item[propName] === undefined) {
+			return false;
+		}
+		switch (operator) {
+			case 'even':
+				return item[propName] % 2 === 0;
+			case 'odd':
+				return item[propName] % 2 !== 0;
+			case 'greaterThan':
+				return item[propName] > value;
+			case 'lessThan':
+				return item[propName] < value;
+			case 'startsWith':
+				return item[propName].startsWith(value);
+			case 'endsWith':
+				return item[propName].endsWith(value);
+			case 'exactMatch':
+				return item[propName] === value;
+			case 'contains':
+				return item[propName].includes(value);
+			case 'camelCase':
+				return item[propName].match(/^[a-z]+([A-Z][a-z]+)*$/);
+			case 'isObject':
+				return typeof item[propName] === 'object';
+			case 'isClass':
+				return typeof item[propName] === 'function';
+			case 'isArray':
+				return Array.isArray(item[propName]);
+			case 'isNumber':
+				return typeof item[propName] === 'number';
+			case 'isString':
+				return typeof item[propName] === 'string';
+			default:
+				throw new Error(
+					'Invalid argument: The second argument must be one of the accepted conditions.'
+				);
+		}
+	});
+
+	return filteredArray;
+}
