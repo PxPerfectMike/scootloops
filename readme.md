@@ -24,7 +24,7 @@ import { forLoopUp } from 'scootloops';
 
 ## forLoopUp(start, end, callback)
 
-A simple incrementing for loop that starts from start and goes up to end. The loop runs the callback function for each iteration, passing in the current loop index as an argument.
+A simple incrementing for-loop that starts from start and goes up to end. The loop runs the callback function for each iteration, passing in the current loop index as an argument.
 
 ```javascript
 forLoopUp(0, 10, (i) => {
