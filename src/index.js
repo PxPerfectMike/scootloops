@@ -14,9 +14,11 @@ export function forLoopDown(start, end, callback) {
 	}
 }
 
-export function forEach(array, callback) {
-	array.forEach(() => {
-		callback;
+export function forEach(array, data, callback) {
+	array.forEach((element) => {
+		if (element === data) {
+			callback(element);
+		}
 	});
 }
 
