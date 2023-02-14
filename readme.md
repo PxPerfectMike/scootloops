@@ -172,8 +172,7 @@ const filteredArray = filterIt(myArray, 'age.greaterThan', 30);
 console.log(filteredArray); // [{ name: "Jane", age: 35 }, { name: "Bob", age: 40 }]
 ```
 
-Click [here](#list-of-operators-for-the-filterit-function) for a list of all the valid operators for the filterIt function.
-Click [here](#list-of-operators-for-the-filterit-function) for a list of all the valid operators for the filterIt function.
+Click [here](#filter-usage-examples) for a few more examples of how to use the filterIt function.
 
 ### List of Operators for the filterIt function
 
