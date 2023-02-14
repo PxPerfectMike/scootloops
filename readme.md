@@ -120,8 +120,16 @@ console.log(doubledArray); // [2, 4, 6, 8, 10]
 The `reduceIt` function reduces an array to a single value by applying a callback function to each element in the array.
 
 ```javascript
-function reduceIt(array, initialValue = 0)
+function reduceIt(array, initialValue)
 ```
+
+or
+
+```javascript
+function reduceIt(array)
+```
+
+> **Note** - If no initial value is specified then the first initial value will default to 0. reduceIt can be called without the inital value argument.
 
 ### Parameters:
 
