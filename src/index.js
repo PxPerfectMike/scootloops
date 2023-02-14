@@ -30,62 +30,91 @@ export function reduceIt(array, initialValue = 0) {
 	);
 }
 
-export function filterIt(array, condition) {
-	if (!array) {
-		throw new Error('Invalid argument: The first argument must be an array.');
+export function filterIt(array, condition, value) {
+	if (!Array.isArray(array)) {
+		console.error('Invalid argument: The first argument must be an array.');
+		return;
 	}
 
-	let filteredArray = [];
-
+	let propName, operator;
 	const conditionParts = condition.split('.');
-	const propName = conditionParts[0];
-	let operator;
-	let value;
-	if (conditionParts[1].includes('(')) {
-		operator = conditionParts[1].split('(')[0];
-		value = parseInt(conditionParts[1].split('(')[1].replace(')', ''));
-	} else {
+	if (conditionParts.length === 1) {
+		operator = condition;
+	} else if (conditionParts.length === 2) {
+		propName = conditionParts[0];
 		operator = conditionParts[1];
-		value = conditionParts[2];
+	} else {
+		console.error(
+			'Invalid argument: The second argument must be a string in the format of "propName.operator"'
+		);
+		return;
 	}
 
-	filteredArray = array.filter((item) => {
-		if (item[propName] === undefined) {
+	const validOperators = [
+		'even',
+		'odd',
+		'greaterThan',
+		'lessThan',
+		'startsWith',
+		'endsWith',
+		'exactMatch',
+		'contains',
+		'camelCase',
+		'isObject',
+		'isClass',
+		'isArray',
+		'isNumber',
+		'isString',
+	];
+
+	if (!validOperators.includes(operator)) {
+		console.error(
+			'Invalid argument: The second argument must be a string in the format of "propName.operator"'
+		);
+		return;
+	}
+
+	const filteredArray = array.filter((item) => {
+		if (propName && item[propName] === undefined) {
 			return false;
 		}
 		switch (operator) {
 			case 'even':
-				return item[propName] % 2 === 0;
+				return item % 2 === 0;
 			case 'odd':
-				return item[propName] % 2 !== 0;
+				return item % 2 !== 0;
 			case 'greaterThan':
-				return item[propName] > value;
+				return item > value;
 			case 'lessThan':
-				return item[propName] < value;
+				return item < value;
 			case 'startsWith':
-				return item[propName].startsWith(value);
+				return item.startsWith(value);
 			case 'endsWith':
-				return item[propName].endsWith(value);
+				return item.endsWith(value);
 			case 'exactMatch':
-				return item[propName] === value;
+				return propName ? item[propName] === value : item === value;
 			case 'contains':
-				return item[propName].includes(value);
+				return item.includes(value);
 			case 'camelCase':
-				return item[propName].match(/^[a-z]+([A-Z][a-z]+)*$/);
+				return /^[a-z]+[A-Z][a-z]*$/.test(item);
+
 			case 'isObject':
-				return typeof item[propName] === 'object';
-			case 'isClass':
-				return typeof item[propName] === 'function';
-			case 'isArray':
-				return Array.isArray(item[propName]);
-			case 'isNumber':
-				return typeof item[propName] === 'number';
-			case 'isString':
-				return typeof item[propName] === 'string';
-			default:
-				throw new Error(
-					'Invalid argument: The second argument must be one of the accepted conditions.'
+				return (
+					typeof item === 'object' && item !== null && !Array.isArray(item)
 				);
+			case 'isClass':
+				return typeof item === 'function';
+			case 'isArray':
+				return Array.isArray(item);
+			case 'isNumber':
+				return typeof item === 'number';
+			case 'isString':
+				return typeof item === 'string';
+			default:
+				console.error(
+					'Invalid argument: The second argument must be a string in the format of "propName.operator"'
+				);
+				return;
 		}
 	});
 
