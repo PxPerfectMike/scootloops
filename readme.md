@@ -151,6 +151,103 @@ function filterIt(array, condition, value)
 - condition - A string that specifies a property and operator to filter by, in the format "propertyName.operator"
 - value - The value to use in the filtering operation
 
+#### Example:
+
+```javascript
+// filter an array of objects to include only those with an age greater than 30
+const myArray = [
+	{ name: 'John', age: 25 },
+	{ name: 'Jane', age: 35 },
+	{ name: 'Bob', age: 40 },
+];
+const filteredArray = filterIt(myArray, 'age.greaterThan', 30);
+console.log(filteredArray); // [{ name: "Jane", age: 35 }, { name: "Bob", age: 40 }]
+```
+
+Click [here](#list-of-operators-for-the-filterit-function) for a list of all the valid operators for the filterIt function.
+Click [here](#list-of-operators-for-the-filterit-function) for a list of all the valid operators for the filterIt function.
+
+### List of Operators for the filterIt function
+
+The filterIt function allows you to filter an array based on specific conditions using a string that specifies a property and operator to filter by. Here is a list of all the valid operators for the filterIt function and what they do:
+
+- `'even'` - Returns true if the element is an even number.
+- `'odd'` - Returns true if the element is an odd number.
+- `'greaterThan'` - Returns true if the element is greater than the given value.
+- `'lessThan'` - Returns true if the element is less than the given value.
+- `'startsWith'` - Returns true if the element starts with the given value.
+- `'endsWith'` - Returns true if the element ends with the given value.
+- `'exactMatch'` - Returns true if the element (or the property specified by the propName argument) is an exact match to the given value.
+- `'contains'` - Returns true if the element contains the given value.
+- `'camelCase'` - Returns true if the element is a string in camelCase format.
+- `'isObject'` - Returns true if the element is an object (but not an array or null).
+- `'isClass'` - Returns true if the element is a function.
+- `'isArray'` - Returns true if the element is an array.
+- `'isNumber'` - Returns true if the element is a number.
+- `'isString'` - Returns true if the element is a string.<br />
+
+> ## Note that for operators that take a value (such as 'greaterThan' and 'lessThan'), you need to provide a third argument to the filterIt function that specifies the value to use in the filtering operation.
+
+## **filterIt Usage Examples**
+
+### Example 1: Filter an array of numbers to include only even numbers
+
+```javascript
+const myArray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const filteredArray = filterIt(myArray, 'even');
+console.log(filteredArray); // [2, 4, 6, 8, 10]
+```
+
+### Example 2: Filter an array of objects to include only those with a property value greater than 5
+
+```javascript
+const myArray = [
+	{ name: 'John', age: 25 },
+	{ name: 'Jane', age: 35 },
+	{ name: 'Bob', age: 40 },
+];
+const filteredArray = filterIt(myArray, 'age.greaterThan', 5);
+console.log(filteredArray); // [{ name: "Jane", age: 35 }, { name: "Bob", age: 40 }]
+```
+
+### Example 3: Filter an array of strings to include only those that start with "A"
+
+```javascript
+const myArray = ['Apple', 'Banana', 'Apricot', 'Cherry', 'Avocado'];
+const filteredArray = filterIt(myArray, 'startsWith', 'A');
+console.log(filteredArray); // ["Apple", "Apricot", "Avocado"]
+```
+
+### Example 4: Filter an array of objects to include only those that have a property value in camelCase format
+
+```javascript
+const myArray = [
+	{ name: 'John Doe', email: 'john.doe@example.com' },
+	{ name: 'Jane Smith', email: 'jane.smith@example.com' },
+	{ name: 'Bob Brown', email: 'bob.brown@example.com' },
+	{ name: 'Anne-Marie Black', email: 'anne-marie.black@example.com' },
+];
+const filteredArray = filterIt(myArray, 'name.camelCase');
+console.log(filteredArray); // [{ name: "John Doe", email: "john.doe@example.com" }, { name: "Bob Brown", email: "bob.brown@example.com" }]
+```
+
+### Example 5: Filter an array of objects to include only those that are of type "object"
+
+```javascript
+const myArray = [
+	{ name: 'John', age: 25 },
+	{ name: 'Jane', age: 35 },
+	'Bob',
+	123,
+	null,
+	{ name: 'Mary', age: 45 },
+];
+const filteredArray = filterIt(myArray, 'isObject');
+console.log(filteredArray); // [{ name: "John", age: 25 }, { name: "Jane", age: 35 }, { name: "Mary", age: 45 }]
+```
+
+---
+
 ## Contributing
 
 If you would like to contribute to the development of `scootloops`, feel free to open a pull request on the repository.
