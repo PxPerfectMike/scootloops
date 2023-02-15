@@ -1,6 +1,6 @@
 {
 	"name": "scootloops",
-	"version": "1.0.2",
+	"version": "1.2.0",
 	"description": "A collection of loops to use easily in your code.",
 	"main": "./src/index.js",
 	"scripts": {
