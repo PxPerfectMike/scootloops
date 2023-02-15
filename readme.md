@@ -1,8 +1,6 @@
 # scootloops
 
-<!-- [![Build Status](https://img.shields.io/npm/v/scootloops.svg)](https://www.npmjs.com/package/scootloops) -->
-
-[![Build Status](https://img.shields.io/travis/user/repo/master.svg?style=flat-square)](https://travis-ci.org/PxPerfectMike/scootloops)
+![Build Status](https://github.com/PxPerfectMike/scootloops/actions/workflows/node.js.yml/badge.svg)
 
 Do you ever get tired of writing the same looping logic over and over again in your JavaScript code? Do you find yourself struggling with complex loops and filtering operations that take up too much of your time and mental energy? If so, then you need a simple and easy-to-use solution that can simplify your coding tasks and free up your creative energy.
 
