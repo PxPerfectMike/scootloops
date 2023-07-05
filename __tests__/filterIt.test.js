@@ -48,7 +48,9 @@ describe('filterIt', () => {
 	});
 
 	it('should filter the array based on the "isClass" condition', () => {
-		class Person {}
+		class Person {
+			constructor() {}
+		}
 		const testArray2 = [1, 'two', Person];
 		const result = filterIt(testArray2, 'isClass');
 		expect(result).toEqual([Person]);
