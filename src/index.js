@@ -29,61 +29,55 @@ export function reduceIt(array, initialValue = 0) {
 	);
 }
 
+function checkType(item, type) {
+	return typeof item === type;
+}
+
 export function filterIt(array, condition, value) {
 	if (!Array.isArray(array)) {
-		console.error('Invalid argument: The first argument must be an array.');
-		return [];
+		throw new Error(
+			'Invalid argument: The first argument must be an array.'
+		);
 	}
 
-	let propName;
 	let operator;
 
 	if (condition.includes('.')) {
 		const conditionParts = condition.split('.');
-		propName = conditionParts[0];
 		operator = conditionParts[1];
 	} else {
 		operator = condition;
 	}
+
 	const operators = {
-		even: (item) => typeof item === 'number' && item % 2 === 0,
-		odd: (item) => typeof item === 'number' && item % 2 !== 0,
-		greaterThan: (item) => typeof item === 'number' && item > value,
-		lessThan: (item) => typeof item === 'number' && item < value,
+		even: (item) => checkType(item, 'number') && item % 2 === 0,
+		odd: (item) => checkType(item, 'number') && item % 2 !== 0,
+		greaterThan: (item) => checkType(item, 'number') && item > value,
+		lessThan: (item) => checkType(item, 'number') && item < value,
 		startsWith: (item) =>
-			typeof item === 'string' && item.startsWith(value),
-		endsWith: (item) => typeof item === 'string' && item.endsWith(value),
+			checkType(item, 'string') && item.startsWith(value),
+		endsWith: (item) => checkType(item, 'string') && item.endsWith(value),
 		exactMatch: (item) => item === value,
-		contains: (item) => typeof item === 'string' && item.includes(value),
+		contains: (item) => checkType(item, 'string') && item.includes(value),
 		camelCase: (item) =>
-			typeof item === 'string' && /^[a-z]+[A-Z][a-z]*$/.test(item),
+			checkType(item, 'string') && /^[a-z]+[A-Z][a-z]*$/.test(item),
 		isObject: (item) =>
-			typeof item === 'object' && item !== null && !Array.isArray(item),
-		isClass: (operand) => {
-			try {
-				// try to instantiate it. If it's a class, this will work.
-				new operand();
-				return true;
-			} catch (error) {
-				// Not a class
-				return false;
-			}
-		},
+			checkType(item, 'object') && item !== null && !Array.isArray(item),
+		isClass: (item) =>
+			typeof item === 'object' && !!item.constructor.prototype,
 		isArray: (item) => Array.isArray(item),
-		isNumber: (item) => typeof item === 'number',
-		isString: (item) => typeof item === 'string',
+		isNumber: (item) => checkType(item, 'number'),
+		isString: (item) => checkType(item, 'string'),
 	};
 
 	return array.filter((item) => {
-		const operand = propName ? item[propName] : item;
 		const operation = operators[operator];
 		if (operation) {
-			return operation(operand);
+			return operation(item);
 		} else {
-			console.error(
+			throw new Error(
 				'Invalid argument: The second argument must be a string in the format of "propName.operator" or an operator'
 			);
-			return false;
 		}
 	});
 }
