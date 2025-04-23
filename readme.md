@@ -2,7 +2,7 @@
 
 ![Build Status](https://github.com/PxPerfectMike/scootloops/actions/workflows/node.js.yml/badge.svg)
 
-`scootloops` is a JavaScript library designed to simplify common looping and filtering operations. It provides a set of intuitive functions that can handle tasks such as looping through a range of numbers, filtering an array of objects based on specific criteria, or transforming an array with a mapping function.
+`scootloops` is a JavaScript utility library that goes beyond simple looping and filtering to provide advanced iteration patterns and utilities that aren't directly available in native JavaScript. It offers a comprehensive set of functions for performance optimization, complex data structure traversal, advanced control flow, parallel processing, and data transformation.
 
 ## Installation
 
@@ -14,33 +14,20 @@ npm install scootloops
 
 ## Usage
 
-Import the library in your code:
+Import any function from the library in your code:
 
 ```javascript
-import { upLoop } from 'scootloops';
+import { upLoop, chunkIt, parallelIt } from 'scootloops';
 ```
 
-# Functions
+# Basic Functions
 
 ## upLoop
 
 Loops through a range of numbers in ascending order, from a starting number up to an ending number (exclusive), and invokes a callback function for each number in the range.
 
 ```javascript
-function upLoop(start, end, callback)
-```
-
-### Parameters:
-
--   `start` (Number): The starting number of the range.
--   `end` (Number): The ending number of the range (exclusive).
--   `callback` (Function): A function to be called for each number in the range.
-
-#### Example:
-
-```javascript
-// print numbers from 1 to 5
-upLoop(1, 6, (i) => console.log(i));
+upLoop(1, 6, (i) => console.log(i)); // prints 1 2 3 4 5
 ```
 
 ## downLoop
@@ -48,95 +35,49 @@ upLoop(1, 6, (i) => console.log(i));
 Loops through a range of numbers in descending order, from a starting number down to an ending number (exclusive), and invokes a callback function for each number in the range.
 
 ```javascript
-function downLoop(start, end, callback)
-
-```
-
-### Parameters:
-
--   `start` (Number): The starting number of the range.
--   `end` (Number): The ending number of the range (exclusive).
--   `callback` (Function): A function to be called for each number in the range.
-
-#### Example:
-
-```javascript
-// print numbers from 5 to 1
-downLoop(5, 0, (i) => console.log(i));
+downLoop(5, 0, (i) => console.log(i)); // prints 5 4 3 2 1
 ```
 
 ## forEach
 
-Loops through an array and invokes a callback function for each element that matches a specific value.
+Loops through an array and invokes a callback function for each element that matches a specific value or predicate function.
 
 ```javascript
-function forEach(array, data, callback)
-```
+// Use with a value to match
+forEach([1, 2, 3, 4, 5], 3, (element) => console.log(element)); // prints 3
 
-### Parameters:
-
--   `array` (Array): The array to loop through.
--   `data` (Any): The value to match against each element in the array.
--   `callback` (Function): A function to be called for each matching element in the array.
-
-#### Example:
-
-```javascript
-// print the value of the first element in the array that matches 3
-const myArray = [1, 2, 3, 4, 5];
-forEach(myArray, 3, (element) => console.log(element));
+// Use with a predicate function
+forEach(
+	[1, 2, 3, 4, 5],
+	(x) => x > 3,
+	(element) => console.log(element)
+); // prints 4 5
 ```
 
 ## mapIt
 
-Loops through an array and applies a callback function to each element in the array, returning a new array with the results.
+Maps each element in an array using a callback function, returning a new array with the results.
 
 ```javascript
-function mapIt(array, callback)
-```
-
-### Parameters:
-
--   `array` (Array): The array to loop through.
--   `callback` (Function): A function to be called for each element in the array.
-
-#### Example:
-
-```javascript
-// double each element in the array
-const myArray = [1, 2, 3, 4, 5];
-const doubledArray = mapIt(myArray, (element) => element * 2);
-console.log(doubledArray); // [2, 4, 6, 8, 10]
+const doubled = mapIt([1, 2, 3, 4, 5], (element) => element * 2);
+console.log(doubled); // [2, 4, 6, 8, 10]
 ```
 
 ## reduceIt
 
-Reduces an array to a single value by applying a callback function to each element in the array.
+Reduces an array to a single value. Can be used in two ways:
+
+1. With the original behavior (summing with an optional initial value):
 
 ```javascript
-function reduceIt(array, initialValue)
+const sum = reduceIt([1, 2, 3, 4, 5]); // 15
+const sumWithInitial = reduceIt([1, 2, 3], 10); // 16
 ```
 
-or
+2. With a custom reducer function:
 
 ```javascript
-function reduceIt(array)
-```
-
-> **Note** - If no initial value is specified then the first initial value will default to 0. reduceIt can be called without the inital value argument.
-
-### Parameters:
-
--   `array` (Array): The array to reduce.
--   `initialValue` (Any): The initial value to use in the reduction.
-
-#### Example:
-
-```javascript
-// add all the elements in the array
-const myArray = [1, 2, 3, 4, 5];
-const sum = reduceIt(myArray);
-console.log(sum); // 15
+const product = reduceIt([1, 2, 3, 4, 5], (acc, val) => acc * val, 1); // 120
 ```
 
 ## filterIt
@@ -144,48 +85,242 @@ console.log(sum); // 15
 Filters an array based on specific conditions using a string that specifies a property and operator to filter by.
 
 ```javascript
-function filterIt(array, condition, value)
+// Filter objects with age greater than 30
+const filteredArray = filterIt(
+	[
+		{ name: 'John', age: 25 },
+		{ name: 'Jane', age: 35 },
+		{ name: 'Bob', age: 40 },
+	],
+	'age.greaterThan',
+	30
+);
+// [{ name: "Jane", age: 35 }, { name: "Bob", age: 40 }]
+
+// Filter for even numbers
+const evens = filterIt([1, 2, 3, 4, 5, 6], 'even');
+// [2, 4, 6]
 ```
 
-### Parameters:
+# Advanced Functions
 
--   `array` (Array): The array to filter.
--   `condition` (String): A string that specifies a property and operator to filter by, in the format "propertyName.operator".
--   `value` (Any): The value to use in the filtering operation.
+## Data Processing
 
-#### Example:
+### chunkIt
+
+Divides an array into chunks of the specified size.
 
 ```javascript
-// filter an array of objects to include only those with an age greater than 30
-const myArray = [
-	{ name: 'John', age: 25 },
-	{ name: 'Jane', age: 35 },
-	{ name: 'Bob', age: 40 },
-];
-const filteredArray = filterIt(myArray, 'age.greaterThan', 30);
-console.log(filteredArray); // [{ name: "Jane", age: 35 }, { name: "Bob", age: 40 }]
+const chunks = chunkIt([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 3);
+console.log(chunks); // [[1, 2, 3], [4, 5, 6], [7, 8, 9], [10]]
 ```
 
-### Operators for filterIt
+### windowIt
 
-The `filterIt` function allows you to filter an array based on specific conditions using a string that specifies a property and operator to filter by. Here is a list of all the valid operators for the `filterIt` function and what they do:
+Creates sliding windows of the specified size from an array.
 
--   `'even'` - Returns true if the element is an even number.
--   `'odd'` - Returns true if the element is an odd number.
--   `'greaterThan'` - Returns true if the element is greater than the given value.
--   `'lessThan'` - Returns true if the element is less than the given value.
--   `'startsWith'` - Returns true if the element starts with the given value.
--   `'endsWith'` - Returns true if the element ends with the given value.
--   `'exactMatch'` - Returns true if the element (or the property specified by the propName argument) is an exact match to the given value.
--   `'contains'` - Returns true if the element contains the given value.
--   `'camelCase'` - Returns true if the element is a string in camelCase format.
--   `'isObject'` - Returns true if the element is an object (but not an array or null).
--   `'isClass'` - Returns true if the element is a function.
--   `'isArray'` - Returns true if the element is an array.
--   `'isNumber'` - Returns true if the element is a number.
--   `'isString'` - Returns true if the element is a string.
+```javascript
+const windows = windowIt([1, 2, 3, 4, 5], 3);
+console.log(windows); // [[1, 2, 3], [2, 3, 4], [3, 4, 5]]
 
-> **Note** - For operators that take a value (such as 'greaterThan' and 'lessThan'), you need to provide a third argument to the `filterIt` function that specifies the value to use in the filtering operation.
+// With step parameter
+const steppedWindows = windowIt([1, 2, 3, 4, 5, 6], 2, 2);
+console.log(steppedWindows); // [[1, 2], [3, 4], [5, 6]]
+```
+
+### zipIt
+
+Zips together multiple arrays into a single array of tuples.
+
+```javascript
+const zipped = zipIt([1, 2, 3], ['a', 'b', 'c'], [true, false, true]);
+console.log(zipped); // [[1, 'a', true], [2, 'b', false], [3, 'c', true]]
+```
+
+## Async Utilities
+
+### parallelIt
+
+Processes items in parallel with a concurrency limit.
+
+```javascript
+const results = await parallelIt(
+	[1, 2, 3, 4, 5],
+	async (item) => {
+		const response = await fetch(`https://api.example.com/${item}`);
+		return response.json();
+	},
+	2 // Limit to 2 concurrent requests
+);
+```
+
+### retryIt
+
+Executes a function with automatic retry logic and exponential backoff.
+
+```javascript
+try {
+	const result = await retryIt(
+		async (attempt) => {
+			console.log(`Attempt ${attempt}`);
+			const response = await fetch('https://api.example.com/data');
+			if (!response.ok) throw new Error('Failed to fetch');
+			return response.json();
+		},
+		{
+			retries: 5,
+			delay: 1000,
+			exponential: true,
+		}
+	);
+	console.log(result);
+} catch (error) {
+	console.error('All retries failed:', error);
+}
+```
+
+### asyncIterateIt
+
+Processes items asynchronously with controlled concurrency and optional delays.
+
+```javascript
+const results = await asyncIterateIt(
+	urls,
+	async (url) => {
+		const response = await fetch(url);
+		return response.json();
+	},
+	{
+		concurrency: 3, // Process 3 at a time
+		delay: 500, // 500ms delay between starting each item
+	}
+);
+```
+
+## Performance Optimization
+
+### memoizeIt
+
+Creates a memoized version of a function for efficient caching of results.
+
+```javascript
+const calculateFibonacci = (n) => {
+	if (n <= 1) return n;
+	return calculateFibonacci(n - 1) + calculateFibonacci(n - 2);
+};
+
+const memoizedFibonacci = memoizeIt(calculateFibonacci);
+console.log(memoizedFibonacci(40)); // Fast even for large numbers
+```
+
+### throttleIt
+
+Creates a throttled function that invokes at most once per specified interval.
+
+```javascript
+const throttledScroll = throttleIt(() => {
+	console.log('Scroll event handled');
+	// Expensive DOM operations
+}, 200);
+
+window.addEventListener('scroll', throttledScroll);
+```
+
+### debounceIt
+
+Creates a debounced function that delays invoking until after wait milliseconds have elapsed since the last invocation.
+
+```javascript
+const debouncedSearch = debounceIt((query) => {
+	console.log(`Searching for: ${query}`);
+	// API call
+}, 300);
+
+searchInput.addEventListener('input', (e) => {
+	debouncedSearch(e.target.value);
+});
+```
+
+## Tree & Deep Object Utilities
+
+### deepIt
+
+Iterates through nested objects/arrays and applies a callback to each value.
+
+```javascript
+const nestedObj = {
+	a: 1,
+	b: {
+		c: 2,
+		d: [3, 4, { e: 5 }],
+	},
+};
+
+deepIt(nestedObj, (value, path) => {
+	console.log(`${path}: ${value}`);
+});
+// Outputs:
+// a: 1
+// b: [object Object]
+// b.c: 2
+// b.d: 3,4,[object Object]
+// b.d.0: 3
+// b.d.1: 4
+// b.d.2: [object Object]
+// b.d.2.e: 5
+```
+
+### dfsIt
+
+Traverses a tree structure using depth-first search.
+
+```javascript
+const tree = {
+	value: 'root',
+	children: [
+		{
+			value: 'A',
+			children: [{ value: 'A1' }, { value: 'A2' }],
+		},
+		{
+			value: 'B',
+			children: [{ value: 'B1' }],
+		},
+	],
+};
+
+dfsIt(tree, (node, depth, path) => {
+	console.log(`${depth}: ${node.value}`);
+});
+// Output: 0: root, 1: A, 2: A1, 2: A2, 1: B, 2: B1
+```
+
+### bfsIt
+
+Traverses a tree structure using breadth-first search.
+
+```javascript
+bfsIt(tree, (node) => {
+	console.log(node.value);
+});
+// Output: root, A, B, A1, A2, B1
+```
+
+## Functional Programming
+
+### pipeIt
+
+Creates a function that is the composition of the provided functions, executing them from left to right.
+
+```javascript
+const addTwo = (x) => x + 2;
+const multiplyByThree = (x) => x * 3;
+const square = (x) => x * x;
+
+const calculate = pipeIt(addTwo, multiplyByThree, square);
+
+console.log(calculate(5)); // ((5 + 2) * 3)² = 441
+```
 
 ## Contributing
 
