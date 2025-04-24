@@ -72,14 +72,14 @@ function checkType(item, type) {
 			throw new TypeError('Invalid type specified');
 	}
 }
-export function filterIt(array, condition, value) {
+export function filterIt(array: unknown[], condition: string, value?: unknown) {
 	if (!Array.isArray(array)) {
 		throw new Error(
 			'Invalid argument: The first argument must be an array.'
 		);
 	}
 
-	let operator;
+	let operator: string;
 
 	if (condition.includes('.')) {
 		const conditionParts = condition.split('.');
@@ -119,9 +119,7 @@ export function filterIt(array, condition, value) {
 			'Invalid argument: The second argument must be a string in the format of "propName.operator" or an operator'
 		);
 	});
-}
-
-// NEW ADVANCED FUNCTIONS
+} // NEW ADVANCED FUNCTIONS
 
 /**
  * Divides an array into batches/chunks of the specified size
@@ -179,7 +177,7 @@ export async function parallelIt(
  */
 export async function retryIt(fn, options = {}) {
 	const { retries = 3, delay = 300, exponential = true } = options;
-	let lastError;
+	let lastError: unknown;
 
 	for (let attempt = 0; attempt <= retries; attempt++) {
 		try {
