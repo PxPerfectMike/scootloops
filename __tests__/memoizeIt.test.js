@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { memoizeIt } from '../src/index';
 
 describe('memoizeIt', () => {

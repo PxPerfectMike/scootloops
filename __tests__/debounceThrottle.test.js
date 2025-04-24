@@ -1,3 +1,11 @@
+import {
+	jest,
+	describe,
+	it,
+	expect,
+	beforeEach,
+	afterEach,
+} from '@jest/globals';
 import { debounceIt, throttleIt } from '../src/index';
 
 // Note: Testing timers is tricky and might require more sophisticated setup

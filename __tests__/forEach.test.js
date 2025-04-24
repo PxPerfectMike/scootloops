@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals';
 import { forEach } from '../src/index';
 
 describe('forEach', () => {
