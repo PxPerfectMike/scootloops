@@ -1,47 +1,32 @@
 // Original functions with improvements
-export function upLoop(start, end, callback) {
-	for (let i = start; i < end; i++) {
-		callback(i);
+export function upLoop(start, end, callback, step = 1) {
+	for (let i = start; i < end; i += step) {
+		const result = callback(i);
+		if (result === false) break;
 	}
 }
 
-export function downLoop(start, end, callback) {
-	for (let i = start; i > end; i--) {
-		callback(i);
+export function downLoop(start, end, callback, step = 1) {
+	for (let i = start; i > end; i -= step) {
+		const result = callback(i);
+		if (result === false) break;
 	}
 }
 
-// Enhanced forEach that accepts a predicate function or value
-export function forEach(array, matcher, callback) {
-	const predicate =
-		typeof matcher === 'function'
-			? matcher
-			: (element) => element === matcher;
-
-	array.forEach((element, index, arr) => {
-		if (predicate(element, index, arr)) {
-			// Only pass the element to match test expectations
-			callback(element);
-		}
-	});
-}
-
-export function mapIt(array, callback) {
-	return array.map(callback);
-}
-
-// Enhanced reduceIt to accept a custom reducer function
-export function reduceIt(array, reducerOrInitial, initialValue) {
-	// Handle different parameter combinations
-	if (typeof reducerOrInitial === 'function') {
-		return array.reduce(reducerOrInitial, initialValue);
+export function times(count, callback) {
+	for (let i = 0; i < count; i++) {
+		const result = callback(i);
+		if (result === false) break;
 	}
-	// Original behavior: sum with optional initial value
-	// If reducerOrInitial is undefined, use 0 as default
-	const initValue = reducerOrInitial === undefined ? 0 : reducerOrInitial;
+}
+
+
+
+// Simple sum utility - for custom reducers, use native array.reduce()
+export function sumIt(array, initialValue = 0) {
 	return array.reduce(
 		(accumulator, currentValue) => accumulator + currentValue,
-		initValue
+		initialValue
 	);
 }
 
@@ -80,9 +65,11 @@ export function filterIt(array, condition, value) {
 	}
 
 	let operator;
+	let propName = null;
 
 	if (condition.includes('.')) {
 		const conditionParts = condition.split('.');
+		propName = conditionParts[0];
 		operator = conditionParts[1];
 	} else {
 		operator = condition;
@@ -101,19 +88,47 @@ export function filterIt(array, condition, value) {
 		camelCase: (item) =>
 			checkType(item, 'string') && /^[a-z]+[A-Z][a-z]*$/.test(item),
 		isObject: (item) => checkType(item, 'object'),
-		isClass: (item) =>
-			typeof item === 'object' &&
-			item !== null &&
-			Object.getPrototypeOf(item) !== Object.prototype,
+		isClass: (item) => typeof item === 'function',
 		isArray: (item) => Array.isArray(item),
 		isNumber: (item) => checkType(item, 'number'),
 		isString: (item) => checkType(item, 'string'),
+		truthy: (item) => !!item,
+		falsy: (item) => !item,
+		isEmpty: (item) => {
+			if (item === null || item === undefined) return true;
+			if (typeof item === 'string' || Array.isArray(item))
+				return item.length === 0;
+			if (typeof item === 'object') return Object.keys(item).length === 0;
+			return false;
+		},
+		hasLength: (item) => {
+			if (typeof item === 'string' || Array.isArray(item)) {
+				return item.length === value;
+			}
+			return false;
+		},
+		between: (item) => {
+			if (!checkType(item, 'number')) return false;
+			if (!Array.isArray(value) || value.length !== 2) {
+				throw new Error(
+					'between operator requires an array of two numbers [min, max]'
+				);
+			}
+			return item >= value[0] && item <= value[1];
+		},
+		matches: (item) => {
+			if (!checkType(item, 'string')) return false;
+			const regex = value instanceof RegExp ? value : new RegExp(value);
+			return regex.test(item);
+		},
 	};
 
 	return array.filter((item) => {
 		const operation = operators[operator];
 		if (operation) {
-			return operation(item);
+			// If propName is specified, extract the property from the item
+			const targetValue = propName ? item[propName] : item;
+			return operation(targetValue);
 		}
 		throw new Error(
 			'Invalid argument: The second argument must be a string in the format of "propName.operator" or an operator'
@@ -155,16 +170,23 @@ export async function parallelIt(
 		return Promise.all(items.map((item) => asyncFn(item)));
 	}
 
-	const chunks = chunkIt(items, concurrency);
 	const results = [];
+	const executing = [];
 
-	for (const chunk of chunks) {
-		const chunkResults = await Promise.all(
-			chunk.map((item) => asyncFn(item))
-		);
-		results.push(...chunkResults);
+	for (let i = 0; i < items.length; i++) {
+		const promise = asyncFn(items[i]).then((result) => {
+			results[i] = result;
+			executing.splice(executing.indexOf(promise), 1);
+		});
+
+		executing.push(promise);
+
+		if (executing.length >= concurrency) {
+			await Promise.race(executing);
+		}
 	}
 
+	await Promise.all(executing);
 	return results;
 }
 

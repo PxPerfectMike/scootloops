@@ -51,9 +51,9 @@ describe('filterIt', () => {
 		class Person {
 			constructor() {}
 		}
-		const testArray2 = [1, 'two', new Person()];
+		const testArray2 = [1, 'two', Person, Array];
 		const result = filterIt(testArray2, 'isClass');
-		expect(result).toEqual([new Person()]);
+		expect(result).toEqual([Person, Array]);
 	});
 
 	it('should filter the array based on the "isArray" condition', () => {
@@ -88,5 +88,60 @@ describe('filterIt', () => {
 		const testArray2 = ['apple', 'banana', 'cherry', 'date'];
 		const result = filterIt(testArray2, 'contains', 'an');
 		expect(result).toEqual(['banana']);
+	});
+
+	it('should filter based on object properties using propName.operator syntax', () => {
+		const people = [
+			{ name: 'John', age: 25 },
+			{ name: 'Jane', age: 35 },
+			{ name: 'Bob', age: 40 },
+		];
+		const result = filterIt(people, 'age.greaterThan', 30);
+		expect(result).toEqual([
+			{ name: 'Jane', age: 35 },
+			{ name: 'Bob', age: 40 },
+		]);
+	});
+
+	it('should filter the array based on the "truthy" condition', () => {
+		const testArray2 = [0, 1, false, true, '', 'hello', null, undefined, {}];
+		const result = filterIt(testArray2, 'truthy');
+		expect(result).toEqual([1, true, 'hello', {}]);
+	});
+
+	it('should filter the array based on the "falsy" condition', () => {
+		const testArray2 = [0, 1, false, true, '', 'hello', null, undefined];
+		const result = filterIt(testArray2, 'falsy');
+		expect(result).toEqual([0, false, '', null, undefined]);
+	});
+
+	it('should filter the array based on the "isEmpty" condition', () => {
+		const testArray2 = ['', 'hello', [], [1, 2], {}, { a: 1 }, null, undefined];
+		const result = filterIt(testArray2, 'isEmpty');
+		expect(result).toEqual(['', [], {}, null, undefined]);
+	});
+
+	it('should filter the array based on the "hasLength" condition', () => {
+		const testArray2 = ['a', 'ab', 'abc', [1], [1, 2], [1, 2, 3]];
+		const result = filterIt(testArray2, 'hasLength', 2);
+		expect(result).toEqual(['ab', [1, 2]]);
+	});
+
+	it('should filter the array based on the "between" condition', () => {
+		const testArray2 = [1, 5, 10, 15, 20, 25, 30];
+		const result = filterIt(testArray2, 'between', [10, 20]);
+		expect(result).toEqual([10, 15, 20]);
+	});
+
+	it('should filter the array based on the "matches" condition with regex', () => {
+		const testArray2 = ['hello', 'world', 'test123', 'abc'];
+		const result = filterIt(testArray2, 'matches', /\d+/);
+		expect(result).toEqual(['test123']);
+	});
+
+	it('should filter the array based on the "matches" condition with string pattern', () => {
+		const testArray2 = ['hello', 'world', 'test123', 'abc'];
+		const result = filterIt(testArray2, 'matches', '^test');
+		expect(result).toEqual(['test123']);
 	});
 });
