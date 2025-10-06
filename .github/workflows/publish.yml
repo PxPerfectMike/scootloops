@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'
 
+permissions:
+  contents: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -30,13 +33,9 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create GitHub Release
-        uses: actions/create-release@v1
+        run: |
+          gh release create ${{ github.ref_name }} \
+            --title "Release ${{ github.ref_name }}" \
+            --notes "See [README](https://github.com/${{ github.repository }}/blob/main/README.md) for documentation and changes."
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            See [CHANGELOG](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details.
-          draft: false
-          prerelease: false
